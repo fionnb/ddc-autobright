@@ -16,7 +16,7 @@ fi
 
 SYS_BRIGHT="$BRIGHT_BASE/$CUR_BRIGHT"
 MAX_BRIGHT=$(cat $BRIGHT_BASE/$MAX_BRIGHT)
-EXT_MON="$(ddcutil detect | grep "i2c-" | cut -d "-" -f2 | tail -n +2)"
+EXT_MON="$(ddcutil detect --force-slave-address | grep "i2c-" | cut -d "-" -f2 | tail -n +2)"
 if [ -z $EXT_MON ]; then
   echo "no external ddc devices found. did you modprobe i2c-dev?"
   exit 1
@@ -31,7 +31,7 @@ while true; do
   if [ $BRIGHT -ne $LAST_B ]; then
     echo "bright changed to $BRIGHT ..."
     for MON in $EXT_MON; do
-      ddcutil --bus $MON setvcp $VCP_CODE $BRIGHT
+      ddcutil --force-slave-address --bus $MON setvcp $VCP_CODE $BRIGHT
     done
     LAST_B=$BRIGHT
   fi
